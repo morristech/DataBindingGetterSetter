@@ -62,20 +62,20 @@ public class MainAction extends BaseGenerateAction {
 
         if (mFiledDialog == null) {
             mFiledDialog = new FiledDialog(mClass);
-
-            mFiledDialog.setListener(new FiledDialog.OnConfirmListener() {
-                @Override
-                public void onConfirm(ArrayList<PsiField> psiFields) {
-                    try {
-                        new WriterUtil(mFile, mProject, mClass, psiFields).execute();
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                }
-            });
         } else {
             mFiledDialog.setData(mClass);
         }
+
+        mFiledDialog.setListener(new FiledDialog.OnConfirmListener() {
+            @Override
+            public void onConfirm(ArrayList<PsiField> psiFields) {
+                try {
+                    new WriterUtil(mFile, mProject, mClass, psiFields).execute();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+        });
 
         mFiledDialog.showDialog();
     }
