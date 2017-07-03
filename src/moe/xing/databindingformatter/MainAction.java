@@ -7,9 +7,12 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilBase;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 /**
  * Created by qixingchen on 16-9-7.
@@ -62,9 +65,9 @@ public class MainAction extends BaseGenerateAction {
 
             mFiledDialog.setListener(new FiledDialog.OnConfirmListener() {
                 @Override
-                public void onConfirm(int[] indexes) {
+                public void onConfirm(ArrayList<PsiField> psiFields) {
                     try {
-                        new WriterUtil(mFile, mProject, mClass, indexes).execute();
+                        new WriterUtil(mFile, mProject, mClass, psiFields).execute();
                     } catch (Throwable throwable) {
                         throwable.printStackTrace();
                     }

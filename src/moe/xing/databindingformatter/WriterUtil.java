@@ -7,6 +7,8 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import org.apache.http.util.TextUtils;
 
+import java.util.ArrayList;
+
 /**
  * Created by Qixingchen on 16-9-12.
  *
@@ -18,22 +20,21 @@ class WriterUtil extends WriteCommandAction.Simple {
     private PsiElementFactory mFactory;
     private Project mProject;
     private PsiFile mFile;
-    private int[] selectedIndeces;
+    private ArrayList<PsiField> mFields;
 
-    WriterUtil(PsiFile mFile, Project project, PsiClass mClass, int[] selectedIndeces) {
+    WriterUtil(PsiFile mFile, Project project, PsiClass mClass, ArrayList<PsiField> fields) {
         super(project, mFile);
         mFactory = JavaPsiFacade.getElementFactory(project);
         this.mFile = mFile;
         this.mProject = project;
         this.mClass = mClass;
-        this.selectedIndeces = selectedIndeces;
+        this.mFields = fields;
     }
 
     @Override
     protected void run() throws Throwable {
-        PsiField[] psiFields = mClass.getFields();
-        for(int index: selectedIndeces) {
-            addMethod(psiFields[index]);
+        for(PsiField field: mFields) {
+            addMethod(field);
         }
         JavaCodeStyleManager styleManager = JavaCodeStyleManager.getInstance(mProject);
         styleManager.optimizeImports(mFile);

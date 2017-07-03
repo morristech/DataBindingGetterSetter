@@ -2,10 +2,14 @@ package moe.xing.databindingformatter;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiMethod;
+import org.apache.http.util.TextUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class FiledDialog extends JDialog {
     private JPanel contentPane;
@@ -15,6 +19,7 @@ public class FiledDialog extends JDialog {
     private PsiClass psiClass;
     private FiledDialog.OnConfirmListener listener;
     private DefaultListModel<String> model;
+    private ArrayList<PsiField> mShowPsiFiledList = new ArrayList<>();
 
     public FiledDialog(PsiClass psiClass) {
         setContentPane(contentPane);
@@ -58,7 +63,11 @@ public class FiledDialog extends JDialog {
     private void onOK() {
         // add your code here
         if (listener != null) {
-            listener.onConfirm(fileds.getSelectedIndices());
+            ArrayList<PsiField> selectedList = new ArrayList<>();
+            for (int index : fileds.getSelectedIndices()) {
+                selectedList.add(mShowPsiFiledList.get(index));
+            }
+            listener.onConfirm(selectedList);
         }
 
         dispose();
@@ -79,9 +88,21 @@ public class FiledDialog extends JDialog {
         PsiField[] classFields = psiClass.getFields();
 
         model.clear();
+        mShowPsiFiledList.clear();
 
         for (PsiField classField : classFields) {
-            model.addElement(classField.getName());
+            String filedName = classField.getName();
+            Boolean alreadyHasGetter = false;
+            for (PsiMethod method : psiClass.getMethods()) {
+                if (method.getName().equals("get" + getFirstUpCaseName(filedName))) {
+                    alreadyHasGetter = true;
+                    break;
+                }
+            }
+            if (!alreadyHasGetter) {
+                model.addElement(filedName);
+                mShowPsiFiledList.add(classField);
+            }
         }
 
         this.pack();
@@ -95,7 +116,15 @@ public class FiledDialog extends JDialog {
     }
 
     public interface OnConfirmListener {
-        void onConfirm(int[] indexes);
+        void onConfirm(ArrayList<PsiField> fields);
+    }
+
+
+    private String getFirstUpCaseName(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return name;
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
 }
