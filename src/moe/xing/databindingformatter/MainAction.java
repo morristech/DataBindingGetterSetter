@@ -70,6 +70,8 @@ public class MainAction extends BaseGenerateAction {
                     }
                 }
             });
+        } else {
+            mFiledDialog.setData(mClass);
         }
 
         mFiledDialog.showDialog();

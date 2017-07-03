@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DataBindingFormatter.iml" filepath="$PROJECT_DIR$/DataBindingFormatter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DataBindingGetterSetter.iml" filepath="$PROJECT_DIR$/DataBindingGetterSetter.iml" />
     </modules>
   </component>
 </project>

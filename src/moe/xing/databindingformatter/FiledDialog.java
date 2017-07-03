@@ -11,28 +11,19 @@ public class FiledDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JList fileds;
+    private JList<String> fileds;
     private PsiClass psiClass;
-    private PsiField[] classFields;
     private FiledDialog.OnConfirmListener listener;
+    private DefaultListModel<String> model;
 
     public FiledDialog(PsiClass psiClass) {
         setContentPane(contentPane);
         setModal(true);
         this.psiClass = psiClass;
-        classFields = psiClass.getFields();
-
-        String[] filedNames = new String[classFields.length];
-
-        for (int i = 0; i < classFields.length; i++) {
-            filedNames[i] = classFields[i].getName();
-        }
-        fileds.setListData(filedNames);
+        model = new DefaultListModel<>();
+        fileds.setModel(model);
 
         fileds.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        getRootPane().setDefaultButton(buttonOK);
-
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -78,18 +69,33 @@ public class FiledDialog extends JDialog {
         dispose();
     }
 
-    public void showDialog() {
+    void setData(PsiClass psiClass) {
+        this.psiClass = psiClass;
+    }
+
+    void showDialog() {
+        getRootPane().setDefaultButton(buttonOK);
+
+        PsiField[] classFields = psiClass.getFields();
+
+        model.clear();
+
+        for (PsiField classField : classFields) {
+            model.addElement(classField.getName());
+        }
+
         this.pack();
         this.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2,
                 (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
         this.setVisible(true);
     }
 
-    public void setListener(OnConfirmListener listener) {
+    void setListener(OnConfirmListener listener) {
         this.listener = listener;
     }
 
     public interface OnConfirmListener {
-        void onConfirm(int[] indexs);
+        void onConfirm(int[] indexes);
     }
+
 }

@@ -1,7 +1,7 @@
 <idea-plugin version="3">
     <id>com.leon.databinding.gettersetter</id>
     <name>Data Binding getter setter</name>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <vendor email="zpczjl@126.com" url="https://github.com/njleonzhang/vue-data-tables">leon zhang</vendor>
 
     <description><![CDATA[
@@ -9,7 +9,7 @@
       <br>
       After created model, open Generate window, select DB Getter and Setter.<br>
 <br>
-      <a href="https://github.com/njleonzhang/DataBindingGetterSetterPlugin">GitHub repo</a>: https://github.com/njleonzhang/DataBindingGetterSetterPlugin <br>
+      <a href="https://github.com/njleonzhang/DataBindingGetterSetter">GitHub repo</a>: https://github.com/njleonzhang/DataBindingGetterSetter <br>
 <br>
       </html>
     ]]></description>
