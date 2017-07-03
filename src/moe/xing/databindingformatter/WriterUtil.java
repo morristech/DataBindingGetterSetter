@@ -56,7 +56,7 @@ class WriterUtil extends WriteCommandAction.Simple {
                 "(" + field.getType().getPresentableText() + " " +
                 field.getName() + "){\n " +
                 "        this." + field.getName() + " = " + field.getName() + ";\n" +
-                "        notifyChange( BR." + field.getName() + ");\n" +
+                "        notifyPropertyChanged( BR." + field.getName() + ");\n" +
                 "    }";
         mClass.add(mFactory.createMethodFromText(setter, mClass));
     }
