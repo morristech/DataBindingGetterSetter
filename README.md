@@ -1,5 +1,5 @@
 # DataBindingGetterSetter
-[a fork of DataBindingModelFormatter](https://github.com/Qixingchen/DataBindingModelFormatter). android data binding setter and getter, similar to the default getter/setter.
+[fork from DataBindingModelFormatter](https://github.com/Qixingchen/DataBindingModelFormatter), and do more. android data binding setter and getter, similar to the default getter/setter.
 
 ## screenshot
 
