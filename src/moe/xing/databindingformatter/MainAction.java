@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * MainAction
  */
 public class MainAction extends BaseGenerateAction {
-
+    FiledDialog mFiledDialog;
 
     @SuppressWarnings("unused")
     public MainAction() {
@@ -40,28 +40,38 @@ public class MainAction extends BaseGenerateAction {
         return super.isValidForFile(project, editor, file);
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
 
-        PsiClass mClass;
+        final PsiClass mClass;
 
-        Project mProject;
+        final Project mProject;
 
         mProject = event.getData(PlatformDataKeys.PROJECT);
         Editor editor = event.getData(PlatformDataKeys.EDITOR);
 
         assert editor != null;
         assert mProject != null;
-        PsiFile mFile = PsiUtilBase.getPsiFileInEditor(editor, mProject);
+        final PsiFile mFile = PsiUtilBase.getPsiFileInEditor(editor, mProject);
 
         assert mFile != null;
         mClass = getTargetClass(editor, mFile);
 
-        try {
-            new WriterUtil(mFile, mProject, mClass).execute();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        if (mFiledDialog == null) {
+            mFiledDialog = new FiledDialog(mClass);
+
+            mFiledDialog.setListener(new FiledDialog.OnConfirmListener() {
+                @Override
+                public void onConfirm(int[] indexes) {
+                    try {
+                        new WriterUtil(mFile, mProject, mClass, indexes).execute();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                }
+            });
         }
 
+        mFiledDialog.showDialog();
     }
-
 }

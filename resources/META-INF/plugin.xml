@@ -1,23 +1,15 @@
 <idea-plugin version="3">
-    <id>moe.xing.databindingformatter</id>
-    <name>Data Binding Formatter</name>
-    <version>0.0.2</version>
-    <vendor email="databinding@xing.moe" url="http://loli.xing.moe">Qixingchen</vendor>
+    <id>com.leon.databinding.gettersetter</id>
+    <name>Data Binding getter setter</name>
+    <version>0.0.1</version>
+    <vendor email="zpczjl@126.com" url="https://github.com/njleonzhang/vue-data-tables">leon zhang</vendor>
 
     <description><![CDATA[
-     <html> Quickly add android data binding setter and getter for a model.<br>
-<br>
-      After created model,open Generate window, select Data Binding Formatter.<br>
-<br>
-      In this preview version,you still have to manually add import for BR class and add implements Observable.<br>
-<br>
-      todo:<br>
-      find exits getter and setter.<br>
-      allow select field.<br>
-<br>
-      <a href="https://github.com/Qixingchen/DataBindingModelFormatter">GitHub repo</a>: https://github.com/Qixingchen/DataBindingModelFormatter <br>
+     <html> android data binding setter and getter, similar to the default getter/setter.<br>
       <br>
-      If you find a Bug,please create a Issue in <a href="https://github.com/Qixingchen/DataBindingModelFormatter/issues/new">GitHub</a>
+      After created model, open Generate window, select DB Getter and Setter.<br>
+<br>
+      <a href="https://github.com/njleonzhang/DataBindingGetterSetterPlugin">GitHub repo</a>: https://github.com/njleonzhang/DataBindingGetterSetterPlugin <br>
 <br>
       </html>
     ]]></description>
@@ -44,8 +36,8 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="databindingformatter" class="moe.xing.databindingformatter.MainAction" text="Data Binding Formatter"
-                description="Data Binding Formatter">
+        <action id="databindinggettersetter" class="moe.xing.databindingformatter.MainAction" text="DB Getter and Setter"
+                description="Getter and Setter for Data Binding">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
     </actions>

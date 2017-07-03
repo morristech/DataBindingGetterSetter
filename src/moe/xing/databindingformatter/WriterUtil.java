@@ -18,85 +18,47 @@ class WriterUtil extends WriteCommandAction.Simple {
     private PsiElementFactory mFactory;
     private Project mProject;
     private PsiFile mFile;
+    private int[] selectedIndeces;
 
-    WriterUtil(PsiFile mFile, Project project, PsiClass mClass) {
+    WriterUtil(PsiFile mFile, Project project, PsiClass mClass, int[] selectedIndeces) {
         super(project, mFile);
         mFactory = JavaPsiFacade.getElementFactory(project);
         this.mFile = mFile;
         this.mProject = project;
         this.mClass = mClass;
+        this.selectedIndeces = selectedIndeces;
     }
 
     @Override
     protected void run() throws Throwable {
-        addMethod();
+        PsiField[] psiFields = mClass.getFields();
+        for(int index: selectedIndeces) {
+            addMethod(psiFields[index]);
+        }
         JavaCodeStyleManager styleManager = JavaCodeStyleManager.getInstance(mProject);
         styleManager.optimizeImports(mFile);
         styleManager.shortenClassReferences(mClass);
         CodeStyleManager.getInstance(mProject).reformat(mClass);
     }
 
-    private void addMethod() {
+    private void addMethod(PsiField field) {
 
-        PsiField[] fields = mClass.getFields();
-        mFactory = JavaPsiFacade.getElementFactory(mProject);
+        String getter =
+                "public " + field.getType().getPresentableText() + " get" + getFirstUpCaseName(field.getName()) +
+                        "(){ \n" +
+                        "return " + field.getName() + "; \n" +
+                        "}";
+        PsiMethod getMethod = mFactory.createMethodFromText(getter, mClass);
+        getMethod.getModifierList().addAnnotation("android.databinding.Bindable");
+        mClass.add(getMethod);
 
-
-        for (PsiField field : fields) {
-
-            String getter =
-                    "public " + field.getType().getPresentableText() + " get" + getFirstUpCaseName(field.getName()) +
-                            "(){ \n" +
-                            "return " + field.getName() + "; \n" +
-                            "}";
-            PsiMethod getMethod = mFactory.createMethodFromText(getter, mClass);
-            getMethod.getModifierList().addAnnotation("android.databinding.Bindable");
-            mClass.add(getMethod);
-
-            String setter = "public void set" + getFirstUpCaseName(field.getName()) +
-                    "(" + field.getType().getPresentableText() + " " +
-                    field.getName() + "){\n " +
-                    "        this." + field.getName() + " = " + field.getName() + ";\n" +
-                    "        notifyChange( BR." + field.getName() + ");\n" +
-                    "    }";
-            mClass.add(mFactory.createMethodFromText(setter, mClass));
-        }
-
-        String pcrFieldCreate = "private "
-                .concat(" transient android.databinding.PropertyChangeRegistry propertyChangeRegistry = new android.databinding.PropertyChangeRegistry();");
-
-        mClass.add(mFactory.createFieldFromText(pcrFieldCreate, mClass));
-
-        String pcrNotifyMethodCreate = "private void notifyChange(int propertyId) {\n" +
-                "        if (propertyChangeRegistry == null) {\n" +
-                "            propertyChangeRegistry = new PropertyChangeRegistry();\n" +
-                "        }\n" +
-                "        propertyChangeRegistry.notifyChange(this, propertyId);\n" +
-                "    } ";
-
-        mClass.add(mFactory.createMethodFromText(pcrNotifyMethodCreate, mClass));
-
-        String pcrAddListener =
-                "public void addOnPropertyChangedCallback(OnPropertyChangedCallback callback) {\n" +
-                        "        if (propertyChangeRegistry == null) {\n" +
-                        "            propertyChangeRegistry = new PropertyChangeRegistry();\n" +
-                        "        }\n" +
-                        "        propertyChangeRegistry.add(callback);\n" +
-                        "\n" +
-                        "    }";
-        PsiMethod pcrAddListenerMethod = mFactory.createMethodFromText(pcrAddListener, mClass);
-        pcrAddListenerMethod.getModifierList().addAnnotation("Override");
-        mClass.add(pcrAddListenerMethod);
-
-        String pcrRemoveListener =
-                "public void removeOnPropertyChangedCallback(OnPropertyChangedCallback callback) {\n" +
-                        "        if (propertyChangeRegistry != null) {\n" +
-                        "            propertyChangeRegistry.remove(callback);\n" +
-                        "        }\n" +
-                        "    }";
-        PsiMethod pcrRemoveListenerMethod = mFactory.createMethodFromText(pcrRemoveListener, mClass);
-        pcrRemoveListenerMethod.getModifierList().addAnnotation("Override");
-        mClass.add(pcrRemoveListenerMethod);
+        String setter = "public void set" + getFirstUpCaseName(field.getName()) +
+                "(" + field.getType().getPresentableText() + " " +
+                field.getName() + "){\n " +
+                "        this." + field.getName() + " = " + field.getName() + ";\n" +
+                "        notifyChange( BR." + field.getName() + ");\n" +
+                "    }";
+        mClass.add(mFactory.createMethodFromText(setter, mClass));
     }
 
     private String getFirstUpCaseName(String name) {
@@ -105,4 +67,5 @@ class WriterUtil extends WriteCommandAction.Simple {
         }
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
+
 }
